@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load urlify %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ instance.title }} |  {{ block.super }}{% endblock head_title %}
+
+{% block content %}
+    <div class="col-sm-6 col-sm-offset-3">
+        {% if instance.image %}
+            <img src="{{ instance.image.url }}" class="img-responsive detail-image">
+        {% endif %}
+        <br>
+        <a href="{% url 'posts:update' slug=instance.slug %}" class="btn btn-default" role="button">Edit</a>
+        <a href="{% url 'posts:delete' slug=instance.slug %}" class="btn btn-danger delete-button" role="button">Delete</a>
+        <a style="float: right" href="{% url 'posts:list' %}" class="btn btn-primary" role="button">Posts Overview</a>
+
+        <h1>{{ instance.title }} <small>{% if instance.draft %}<span style="color: red">Draft</span> {% endif %}{{ instance.publish }}<br></small></h1>
+        <p>{% if instance.read_time %}Read time: {{ instance.read_time| time:"i" }} minutes{% endif %}</p>
+        {% if instance.user.get_full_name %}
+            <p>Author: {{ instance.user.get_full_name }}</p>
+        {% endif %}
+
+        <p><div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div></p>
+        <p>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+            Facebook
+            </a>
+            <a href="https://twitter.com/home?status={{ share_string | truncatechars:80 }}%20{{ request.build_absolute_uri }}">
+            Twitter
+            </a>
+            <a href='https://plus.google.com/share?url={{ request.build_absolute_uri }}'>Google Plus</a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ instance.title|urlify }}&summary={{ share_string }}&source={{ request.build_absolute_uri }}">
+            Linkedin
+            </a>
+            <a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}&title={{ share_string }}">Reddit</a>
+        </p>
+        <hr>
+
+        <div class="content-markdown">
+            {{ instance.get_markdown }}
+        </div>
+
+        <hr style="border: 1px solid #afb0af;">
+        <div style="margin-bottom: 20px">
+            <p class="lead">Comments</p>
+            <form method="POST" action="">{% csrf_token %}
+                {{ comment_form | crispy }}
+                <input type="submit" value="Comment" class="btn btn-default">
+            </form>
+            <hr>
+            {% for comment in comments %}
+                <blockquote>
+                    <p>{{ comment.content }}</p>
+                    <footer>
+                        From: {{ comment.user }} |  {{ comment.timestamp|timesince }} ago |
+                        {% if comment.children.count > 0 %}{{ comment.children.count }} Comment{% if comment.children.count > 1 %}s
+                        {% endif %} | {% endif %}
+                        <a class="comment-reply-btn" href="#">Reply</a> |
+                        <a href="{{ comment.get_absolute_url }}">Thread</a>
+                    </footer>
+
+                    <div class="comment-reply">
+                        {% for child_comment in comment.children %}
+                            <blockquote>
+                                <p>{{ child_comment.content }}</p>
+                                <footer>From: {{ child_comment.user }} |  {{ child_comment.timestamp|timesince }} ago</footer>
+                            </blockquote>
+                        {% endfor %}
+                        <form method="POST" action="">{% csrf_token %}
+                            {{ comment_form | crispy }}
+                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                            <input type="submit" value="Reply" class="btn btn-default">
+                        </form>
+                    </div>
+                </blockquote>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_footer %}
+    <script src="{% static 'js/scripts.js'%}" type="text/javascript"></script>
+{% endblock extra_footer %}
+

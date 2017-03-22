@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head_extra %}
+    {{ form.media }}
+{% endblock head_extra %}
+
+{% block content %}
+    <div class="col-sm-6">
+        <h1>Preview</h1>
+        <hr>
+        <div class="content-preview">
+            <h3 id="preview-title"></h3><br>
+            <p id="preview-content"></p>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <h1>{{ title }}</h1>
+        <hr>
+        <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+            {{ form | crispy }}
+            <input class="btn btn-primary" type="submit"
+                   value="{% if request.path == "/create/" %} Create {% else %} Update {% endif %}">
+        </form>
+    </div>
+{% endblock content %}
+
+{% block extra_footer %}
+    <script src="{% static 'js/markdown.js'%}" type="text/javascript"></script>
+{% endblock extra_footer %}

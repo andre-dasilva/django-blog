@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load urlify %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ instance.title }} |  {{ block.super }}{% endblock head_title %}
+
+{% block content %}
+    {{ object }}
+
+    <div class="col-sm-6 col-sm-offset-3">
+        <p style="font-size: 20px; margin-top: 20px">{{ comment.content }}
+            <a href="{% url "comments:comment_delete" id=comment.id %}" class="btn btn-danger" style="float: right">Delete</a>
+            <a href="{% url "posts:detail" slug=comment.content_object.slug %}" class="btn btn-primary" style="float: right; margin-right: 5px">Back</a>
+        </p>
+
+        <footer>
+            From: {{ comment.user }} |  {{ comment.timestamp|timesince }} ago
+            {% if comment.children.count > 0 %}{{ comment.children.count }} | Comment{% if comment.children.count > 1 %}s
+            {% endif %}{% endif %}
+        </footer>
+        <hr>
+        <div style="margin-bottom: 20px">
+            {% for child_comment in comment.children %}
+                <blockquote>
+                    <p>{{ child_comment.content }}</p>
+                    <footer>
+                        From: {{ child_comment.user }} |  {{ child_comment.timestamp|timesince }} ago |
+                        {% if request.user == child_comment.user %}
+                            <a href="{% url "comments:comment_delete" id=child_comment.id %}">Delete</a>
+                        {% endif %}
+                    </footer>
+                </blockquote>
+            {% endfor %}
+            <form method="POST" action="">{% csrf_token %}
+                {{ form | crispy }}
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <input type="submit" value="Reply" class="btn btn-default">
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+
