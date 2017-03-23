@@ -13,8 +13,8 @@ from .forms import PostForm
 from comments.forms import CommentForm
 from comments.models import Comment
 
-# TODO: Add logging, favicon.ico and push to GitHub and of course finish advancing the blog and rest framework
-# https://docs.djangoproject.com/en/1.10/topics/logging/
+# TODO: Add logging and mail support and finish advancing the blog
+# TODO: Create a new branch and add rest framework support
 
 
 def post_create(request):
