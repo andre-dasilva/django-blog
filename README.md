@@ -12,6 +12,10 @@ Create a virtual environment:
 
 `virtualenv venv`
 
+Install project dependencies:
+
+`pip install -r requirements.txt`
+
 Move into the source directory:
 
 `cd src/`

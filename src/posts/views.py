@@ -14,6 +14,8 @@ from comments.forms import CommentForm
 from comments.models import Comment
 
 # TODO: Add logging and mail support and finish advancing the blog
+# https://goo.gl/G31vlk
+# Advancing the Blog - 23 - Basic User Login, Registration, Logout
 # TODO: Create a new branch and add rest framework support
 
 
