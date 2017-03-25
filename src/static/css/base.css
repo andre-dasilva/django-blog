@@ -15,10 +15,10 @@ h1 {
     margin-right: 0 !important;
 }
 
-.alert {
-    margin-bottom: 0 !important;
-}
-
 .comment-reply {
     display: none;
+}
+
+.breadcrumb {
+    background-color: #e8edf7;
 }

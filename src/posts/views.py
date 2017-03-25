@@ -3,6 +3,7 @@ from urllib.parse import quote_plus
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect, Http404
@@ -13,16 +14,9 @@ from .forms import PostForm
 from comments.forms import CommentForm
 from comments.models import Comment
 
-# TODO: Add logging and mail support and finish advancing the blog
-# https://goo.gl/G31vlk
-# Advancing the Blog - 23 - Basic User Login, Registration, Logout
-# TODO: Create a new branch and add rest framework support
 
-
+@login_required
 def post_create(request):
-    if not request.user.is_staff or not request.user.is_superuser:
-        raise Http404
-
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         instance = form.save(commit=False)
@@ -38,6 +32,7 @@ def post_create(request):
     return render(request, "post_form.html", context)
 
 
+@login_required
 def post_detail(request, slug=None):
     instance = get_object_or_404(Post, slug=slug)
     if instance.draft or instance.publish > timezone.now().date():
@@ -51,7 +46,7 @@ def post_detail(request, slug=None):
     }
 
     comment_form = CommentForm(request.POST or None, initial=initial_data)
-    if comment_form.is_valid():
+    if comment_form.is_valid() and request.user.is_authenticated():
         c_type = comment_form.cleaned_data.get("content_type")
         content_type = ContentType.objects.get(model=c_type)
         object_id = comment_form.cleaned_data.get("object_id")
@@ -89,6 +84,7 @@ def post_detail(request, slug=None):
     return render(request, "post_detail.html", context)
 
 
+@login_required
 def post_list(request):
     today = timezone.now().date()
     queryset_list = Post.objects.active()
@@ -120,10 +116,8 @@ def post_list(request):
     return render(request, "post_list.html", context)
 
 
+@login_required
 def post_update(request, slug=None):
-    if not request.user.is_staff or not request.user.is_superuser:
-        raise Http404
-
     instance = get_object_or_404(Post, slug=slug)
     form = PostForm(request.POST or None, request.FILES or None, instance=instance)
     if form.is_valid():
@@ -140,6 +134,7 @@ def post_update(request, slug=None):
     return render(request, "post_form.html", context)
 
 
+@login_required
 def post_delete(request, slug=None):
     if not request.user.is_staff or not request.user.is_superuser:
         messages.error(request, "You don't have the permissions to delete this post")

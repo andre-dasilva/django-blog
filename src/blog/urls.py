@@ -17,11 +17,15 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from accounts import views as account
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include("posts.urls", namespace="posts")),
+    url(r'^login/', account.login_view, name="login"),
+    url(r'^logout/', account.logout_view, name="logout"),
+    url(r'^register/', account.register_view, name="register"),
     url(r'^comments/', include("comments.urls", namespace="comments")),
+    url(r'^', include("posts.urls", namespace="posts")),
 ]
 
 if settings.DEBUG:

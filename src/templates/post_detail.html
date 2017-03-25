@@ -5,6 +5,10 @@
 
 {% block head_title %}{{ instance.title }} |  {{ block.super }}{% endblock head_title %}
 
+{% block post_detail_link %}
+    <li><a href="{{ instance.get_absolute_url }}">{{ instance.title }}</a></li>
+{% endblock %}
+
 {% block content %}
     <div class="col-sm-6 col-sm-offset-3">
         {% if instance.image %}
@@ -44,6 +48,7 @@
         <hr style="border: 1px solid #afb0af;">
         <div style="margin-bottom: 20px">
             <p class="lead">Comments</p>
+            {% if request.user.is_authenticated %}
             <form method="POST" action="">{% csrf_token %}
                 {{ comment_form | crispy }}
                 <input type="submit" value="Comment" class="btn btn-default">
@@ -76,6 +81,9 @@
                 </blockquote>
                 <hr>
             {% endfor %}
+            {% else %}
+                <p>You must login to comment</p>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

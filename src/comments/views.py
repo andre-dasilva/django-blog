@@ -2,11 +2,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, Http404
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Comment
 from .forms import CommentForm
 
 
+@login_required
 def comment_thread(request, id):
     try:
         obj = Comment.objects.get(id=id)
@@ -52,6 +54,7 @@ def comment_thread(request, id):
     return render(request, "comment_thread.html", context)
 
 
+@login_required
 def comment_delete(request, id):
     try:
         obj = Comment.objects.get(id=id)
@@ -63,7 +66,7 @@ def comment_delete(request, id):
         # response.status_code = 403
         # return response
         messages.error(request, "You don't have the permissions to delete this comment")
-        raise Http404
+        return HttpResponseRedirect(obj.get_absolute_url())
 
     if request.method == "POST":
         url = obj.content_object.get_absolute_url()

@@ -9,7 +9,7 @@
     {{ object }}
 
     <div class="col-sm-6 col-sm-offset-3">
-        <p style="font-size: 20px; margin-top: 20px">{{ comment.content }}
+        <p style="font-size: 20px; margin-top: 10px">{{ comment.content }}
             <a href="{% url "comments:comment_delete" id=comment.id %}" class="btn btn-danger" style="float: right">Delete</a>
             <a href="{% url "posts:detail" slug=comment.content_object.slug %}" class="btn btn-primary" style="float: right; margin-right: 5px">Back</a>
         </p>
