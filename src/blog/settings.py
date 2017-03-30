@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'markdown_deux',
     'pagedown',
+    'rest_framework',
 
     # Own apps
     'comments',
