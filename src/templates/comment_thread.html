@@ -6,8 +6,6 @@
 {% block head_title %}{{ instance.title }} |  {{ block.super }}{% endblock head_title %}
 
 {% block content %}
-    {{ object }}
-
     <div class="col-sm-6 col-sm-offset-3">
         <p style="font-size: 20px; margin-top: 10px">{{ comment.content }}
             <a href="{% url "comments:comment_delete" id=comment.id %}" class="btn btn-danger" style="float: right">Delete</a>
@@ -15,8 +13,8 @@
         </p>
 
         <footer>
-            From: {{ comment.user }} |  {{ comment.timestamp|timesince }} ago
-            {% if comment.children.count > 0 %}{{ comment.children.count }} | Comment{% if comment.children.count > 1 %}s
+            From: {{ comment.user }} |  {{ comment.timestamp|timesince }} ago |
+            {% if comment.children.count > 0 %}{{ comment.children.count }} Comment{% if comment.children.count > 1 %}s
             {% endif %}{% endif %}
         </footer>
         <hr>
