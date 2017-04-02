@@ -20,10 +20,10 @@
         <a style="float: right" href="{% url 'posts:list' %}" class="btn btn-primary" role="button">Posts Overview</a>
 
         <h1>{{ instance.title }} <small>{% if instance.draft %}<span style="color: red">Draft</span> {% endif %}{{ instance.publish }}<br></small></h1>
-        <p>{% if instance.read_time %}Read time: {{ instance.read_time| time:"i" }} minutes{% endif %}</p>
-        {% if instance.user.get_full_name %}
-            <p>Author: {{ instance.user.get_full_name }}</p>
+        {% if instance.user %}
+            <p style="font-weight: 300">Author: {{ instance.user.username }}</p>
         {% endif %}
+        <p>{% if instance.read_time %}Read time: {{ instance.read_time| time:"i" }} minutes{% endif %}</p>
 
         <p><div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div></p>
         <p>

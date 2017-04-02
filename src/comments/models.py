@@ -14,6 +14,23 @@ class CommentManager(models.Manager):
         obj_id = instance.id
         return super(CommentManager, self).filter(content_type=content_type, object_id=obj_id).filter(parent=None)
 
+    def create_by_model_type(self, model_type, slug, content, user, parent_object=None):
+        model_qs = ContentType.objects.filter(model=model_type)
+        if model_qs.exists():
+            some_model = model_qs.first().model_class()
+            obj_qs = some_model.objects.filter(slug=slug)
+            if obj_qs.exists() and obj_qs.count() == 1:
+                instance = self.model()
+                instance.content = content
+                instance.user = user
+                instance.content_type = model_qs.first()
+                instance.object_id = obj_qs.first().id
+                if parent_object:
+                    instance.parent = parent_object
+                instance.save()
+                return instance
+        return None
+
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
