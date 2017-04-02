@@ -1,6 +1,8 @@
+from rest_framework.fields import ImageField
 from rest_framework.serializers import ModelSerializer, HyperlinkedIdentityField, SerializerMethodField
 from posts.models import Post
 from comments.api.serializers import CommentListSerializer
+from accounts.api.serializers import UserDetailSerializer
 from comments.models import Comment
 
 
@@ -9,7 +11,8 @@ class PostListSerializer(ModelSerializer):
         view_name='posts-api:detail',
         lookup_field='slug'
     )
-    user = SerializerMethodField()
+    user = UserDetailSerializer(read_only=True)
+    image = ImageField(max_length=None, use_url=True)
 
     class Meta:
         model = Post
@@ -19,16 +22,14 @@ class PostListSerializer(ModelSerializer):
             'user',
             'title',
             'content',
+            'image',
             'publish',
         ]
 
-    def get_user(self, obj):
-        return str(obj.user.username)
-
 
 class PostDetailSerializer(ModelSerializer):
-    user = SerializerMethodField()
-    image = SerializerMethodField()
+    user = UserDetailSerializer(read_only=True)
+    image = ImageField(max_length=None, use_url=True)
     html = SerializerMethodField()
     comments = SerializerMethodField()
 
@@ -48,16 +49,6 @@ class PostDetailSerializer(ModelSerializer):
         read_only_fields = [
             "slug",  # SerializerMethodFields() are automatically read_only
         ]
-
-    def get_user(self, obj):
-        return str(obj.user.username)
-
-    def get_image(self, obj):
-        try:
-            image = obj.image.url
-        except:
-            return None
-        return image
 
     def get_html(self, obj):
         return obj.get_markdown()

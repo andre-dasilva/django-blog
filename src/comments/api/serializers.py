@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, HyperlinkedIdentityField, SerializerMethodField
 from comments.models import Comment
+from accounts.api.serializers import UserDetailSerializer
 
 User = get_user_model()
 
@@ -81,8 +82,9 @@ class CommentListSerializer(ModelSerializer):
         return str(obj.user.username)
 
     def get_content_object_url(self, obj):
+        request = self.context["request"]
         if obj.content_object:
-            return obj.content_object.get_api_url()
+            return request.build_absolute_uri(obj.content_object.get_api_url())
         return None
 
     def get_reply_count(self, obj):
@@ -92,7 +94,7 @@ class CommentListSerializer(ModelSerializer):
 
 
 class CommentChildSerializer(ModelSerializer):
-    user = SerializerMethodField()
+    user = UserDetailSerializer(read_only=True)
 
     class Meta:
         model = Comment
@@ -103,19 +105,18 @@ class CommentChildSerializer(ModelSerializer):
             'timestamp',
         ]
 
-    def get_user(self, obj):
-        return str(obj.user.username)
-
 
 class CommentDetailSerializer(ModelSerializer):
     reply_count = SerializerMethodField()
     replies = SerializerMethodField()
     content_object_url = SerializerMethodField()
+    user = UserDetailSerializer(read_only=True)
 
     class Meta:
         model = Comment
         fields = [
             'id',
+            'user',
             'content',
             'reply_count',
             'replies',
@@ -128,8 +129,9 @@ class CommentDetailSerializer(ModelSerializer):
         ]
 
     def get_content_object_url(self, obj):
+        request = self.context["request"]
         if obj.content_object:
-            return obj.content_object.get_api_url()
+            return request.build_absolute_uri(obj.content_object.get_api_url())
         return None
 
     def get_replies(self, obj):

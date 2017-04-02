@@ -7,6 +7,6 @@ from .views import (
 
 urlpatterns = [
     url(r'^$', CommentListAPIView.as_view(), name="list"),
-    url(r'^$/create', CommentCreateAPIView.as_view(), name="create"),
+    url(r'^create/', CommentCreateAPIView.as_view(), name="create"),
     url(r'^(?P<id>\d+)/$', CommentDetailAPIView.as_view(), name="detail"),  # also update, delete
 ]
