@@ -12,7 +12,9 @@
 {% block content %}
     <div class="col-sm-6 col-sm-offset-3">
         {% if instance.image %}
-            <img src="{{ instance.image.url }}" class="img-responsive detail-image">
+            <a class="image-popup" href="{{ instance.image.url }}">
+                <img src="{{ instance.image.url }}" class="img-responsive detail-image">
+            </a>
         {% endif %}
         <br>
         <a href="{% url 'posts:update' slug=instance.slug %}" class="btn btn-default" role="button">Edit</a>
