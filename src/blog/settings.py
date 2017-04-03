@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # Own apps
+    'accounts',
     'comments',
     'posts',
 ]
