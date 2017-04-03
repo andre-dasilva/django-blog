@@ -2,6 +2,8 @@
 
 This blog is written in python with the web framework [django (1.9)](https://www.djangoproject.com/)
 
+*Project is pretty much done, but there are some possible extensions. Look at the [TODO's](TODO.md)*
+
 ## Installation
 
 Fork the repository and then clone it:
