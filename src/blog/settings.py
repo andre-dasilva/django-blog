@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,8 +39,10 @@ INSTALLED_APPS = [
     'crispy_forms',
     'markdown_deux',
     'pagedown',
+    'rest_framework',
 
     # Own apps
+    'accounts',
     'comments',
     'posts',
 ]
@@ -129,3 +132,30 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication', / enable for development
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=900),  # allow 15 minutes to keep the token
+    'JWT_ALLOW_REFRESH': False,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+}
+
+# JWT Usage
+'''
+curl -X POST -d "username=admin&password=start123" http://localhost:8000/api/auth/token/
+
+curl -H "Authorization: JWT <your_token>" http://localhost:8000/api/comments/
+'''

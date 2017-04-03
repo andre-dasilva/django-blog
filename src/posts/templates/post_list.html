@@ -20,7 +20,7 @@
 
         {% if not object_list %}
             <p style="margin-bottom: 0; color: red; font-weight: bold">
-                There are no uploaded Posts. Be the first :-)
+                There are no uploaded posts. Be the first :-)
             </p>
         {% endif %}
 
@@ -29,14 +29,17 @@
                 <div class="col-sm-12">
                     <div class="thumbnail">
                         {% if obj.image %}
-                            <img src="{{ obj.image.url }}" class="img-responsive">
+                            <a class="image-popup" href="{{ obj.image.url }}" title="{{ obj.title }}">
+                                <img src="{{ obj.image.url }}" class="img-responsive">
+                            </a>
                         {% endif %}
                         <div class="caption">
                             {% if obj.draft %}<h3>Staff only: Draft {% if obj.publish > today %}<h3>Staff only: Future Post</h3> {% endif %}</h3>{% endif %}
                             <h3><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a> <small>{{ obj.timestamp | timesince }} </small></h3>
-                            {% if obj.user.get_full_name %}<p>Author: {{ obj.user.get_full_name }}</p>{% endif %}
+                            {% if obj.user %}<p style="font-weight: 300">Author: {{ obj.user.username }}</p>{% endif %}
+                            <hr style="margin-top: 15px">
                             <div class="content-markdown">{{ obj.get_markdown | truncatechars_html:120 }}</div>
-                            <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+                            <p style="margin-top: 25px"><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
                         </div>
                     </div>
                 </div>
@@ -60,3 +63,7 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block extra_footer %}
+    <script src="{% static 'js/scripts.js'%}" type="text/javascript"></script>
+{% endblock extra_footer %}
