@@ -5,7 +5,7 @@ import os
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='blog',
+    name='django-blog',
     version='0.0.1',
     description='Django blog',
     author='André da Silva',
