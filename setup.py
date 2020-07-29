@@ -11,7 +11,8 @@ setup(
     author='André da Silva',
     author_email='andre-da.silva@outlook.com',
     include_package_data=True,
-    packages=find_packages(),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
