@@ -4,6 +4,9 @@ import os
 # Allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='django-blog',
     version='0.0.1',
@@ -28,4 +31,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content'
     ],
     python_requires='>=3.6',
+    install_requires=required,
 )
